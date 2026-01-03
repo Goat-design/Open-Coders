@@ -1,6 +1,18 @@
-secret.php
-config.php
-*.env
+# Composer dependencies
 /vendor/
-vendor
-composer.lock
+
+# Environment & secrets
+.env
+.env.*
+secret.php
+
+# IDE / editor
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
