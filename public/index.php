@@ -50,7 +50,6 @@ $request = str_replace($config['urls']['baseUrl'],'',$_SERVER['REQUEST_URI']);
       }
       break;
 
-      break;
       // ... switch-lauseen alku säilyy sellaisenaan
     case '/lisaa_tili':
       if (isset($_POST['laheta'])) {
@@ -219,25 +218,69 @@ $request = str_replace($config['urls']['baseUrl'],'',$_SERVER['REQUEST_URI']);
 
       break;
 
-case (bool)preg_match('/\/admin.*/', $request):
-  if ($loggeduser && !empty($loggeduser["admin"])) {
+    case (bool)preg_match('/\/admin.*/', $request):
+      if ($loggeduser && !empty($loggeduser["admin"])) {
 
-    $kayttajat = [];
+        $kayttajat = [];
+        $errors = [];
+        $info = null;
 
-    if (isset($_GET['listaa_kayttajat']) && $_GET['listaa_kayttajat'] === '1') {
-      require_once MODEL_DIR . 'henkilo.php';
-      $kayttajat = haeKayttajat();
-    }
+        // 1) Projektin luonti (POST)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'lisaa_projekti') {
 
-    echo $templates->render('yllapito', [
-      'loggeduser' => $loggeduser,
-      'kayttajat'  => $kayttajat
-    ]);
+          $nimi = trim($_POST['nimi'] ?? '');
+          $tyyppi = trim($_POST['tyyppi'] ?? '');
+          $vetaja = trim($_POST['vetaja'] ?? '');
+          $kuvaus = trim($_POST['kuvaus'] ?? '');
+          $osallistujia = $_POST['osallistujia'] ?? null;
 
-  } else {
-    echo $templates->render('admin_ei_oikeuksia');
-  }
-  break;
+          if ($nimi === '') $errors[] = "Projektin nimi puuttuu.";
+          if ($tyyppi === '') $errors[] = "Tyyppi puuttuu.";
+          if ($vetaja === '') $errors[] = "Vetäjä puuttuu.";
+          if ($kuvaus === '') $errors[] = "Kuvaus puuttuu.";
+
+          if ($osallistujia !== null && $osallistujia !== '') {
+            if (!ctype_digit((string)$osallistujia) || (int)$osallistujia < 1) {
+              $errors[] = "Osallistujamäärän pitää olla vähintään 1.";
+            }
+          }
+
+          if (!$errors) {
+            require_once MODEL_DIR . 'tapahtuma.php';
+
+            try {
+              if (lisaaProjekti($nimi, $tyyppi, $kuvaus, $vetaja, $osallistujia)) {
+                $info = "Projekti lisätty onnistuneesti.";
+                header("Location: " . $config['urls']['baseUrl'] . "/admin?lisaa_projekti=1");
+                exit;
+              } else {
+                $errors[] = "Projektin lisääminen epäonnistui.";
+              }
+            } catch (Throwable $e) {
+              $errors[] = "Projektin lisääminen epäonnistui (palvelinvirhe).";
+            }
+          }
+        }
+
+        // 2) Käyttäjien listaus (GET)
+        if (isset($_GET['listaa_kayttajat']) && $_GET['listaa_kayttajat'] === '1') {
+          require_once MODEL_DIR . 'henkilo.php';
+          $kayttajat = haeKayttajat();
+        }
+
+        echo $templates->render('yllapito', [
+          'loggeduser' => $loggeduser,
+          'kayttajat'  => $kayttajat,
+          'errors'     => $errors,
+          'info'       => $info
+        ]);
+
+      } else {
+        echo $templates->render('admin_ei_oikeuksia');
+      }
+      break;
+
+
 
 
 

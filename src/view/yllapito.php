@@ -6,11 +6,31 @@
 
   <form method="get" action="">
     <button type="submit" name="listaa_kayttajat" value="1">Listaa käyttäjät</button>
+    <button type="submit" name="lisaa_projekti" value="1">Luo projekti</button>
   </form>
 
   <?php
     $listaa = isset($_GET['listaa_kayttajat']) && $_GET['listaa_kayttajat'] === '1';
+    $lisaa_projekti = isset($_GET['lisaa_projekti']) && $_GET['lisaa_projekti'] === '1';
   ?>
+
+  <?php if ($listaa || $lisaa_projekti): ?>
+    <form method="get" action="" style="margin-top: 1rem;">
+      <button type="submit">Takaisin</button>
+    </form>
+  <?php endif; ?>
+
+  <?php if (!empty($info)): ?>
+    <div class="info"><?= htmlspecialchars((string)$info) ?></div>
+  <?php endif; ?>
+
+  <?php if (!empty($errors) && is_array($errors)): ?>
+    <div class="error" style="margin: 1rem 0;">
+      <?php foreach ($errors as $e): ?>
+        <div><?= htmlspecialchars((string)$e) ?></div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
 
   <?php if ($listaa): ?>
 
@@ -44,6 +64,48 @@
         </tbody>
       </table>
     <?php endif; ?>
+
+  <?php endif; ?>
+
+
+  <?php if ($lisaa_projekti): ?>
+
+    <h2>Uusi projekti</h2>
+
+    <div class="info">
+      Roolit ja työnjako sovitaan projektin alussa Discordissa.
+    </div>
+
+    <form method="post" action="">
+      <input type="hidden" name="action" value="lisaa_projekti">
+
+      <div>
+        <label>Projektin nimi</label>
+        <input type="text" name="nimi" required>
+      </div>
+
+      <div>
+        <label>Tyyppi</label>
+        <input type="text" name="tyyppi" placeholder="esim. peli / verkkopalvelu / sovellus" required>
+      </div>
+
+      <div>
+        <label>Vetäjä</label>
+        <input type="text" name="vetaja" placeholder="Nimi / Nimimerkki" required>
+      </div>
+
+      <div>
+        <label>Maksimi osallistujamäärä</label>
+        <input type="number" name="osallistujia" min="1" placeholder="esim. 10">
+      </div>
+
+      <div>
+        <label>Kuvaus</label>
+        <textarea name="kuvaus" rows="6" required></textarea>
+      </div>
+
+      <input type="submit" value="Tallenna projekti">
+    </form>
 
   <?php endif; ?>
 
