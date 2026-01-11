@@ -18,7 +18,16 @@
 
 <?php if (!$tila): ?>
 
+<div class="admin-header">
     <h2>Projektit</h2>
+
+  <form method="get" action="">
+    <button type="submit" name="lisaa_projekti" value="1" class="button small">
+      + Luo projekti
+    </button>
+  </form>
+</div>
+
 
     <?php if (!empty($projektit)): ?>
       <table>
@@ -49,12 +58,6 @@
 
 <?php endif; ?>
 
-<?php if (!$tila): ?>
-  <form method="get" action="">
-    <button type="submit" name="lisaa_projekti" value="1">Luo projekti</button>
-  </form>
-<?php endif; ?>
- 
 
   <?php if ($tila): ?>
     <form method="get" action="" style="margin-top: 1rem;">

@@ -1,6 +1,16 @@
 <?php
   // Aloitetaan istunnot.
   session_start();
+  // Ensimmäisen käynnin ohjaus infosivulle
+if (
+  empty($_SESSION['intro_seen']) &&
+  $_SERVER['REQUEST_URI'] === $config['urls']['baseUrl']
+) {
+  $_SESSION['intro_seen'] = true;
+  header("Location: " . $config['urls']['baseUrl'] . "/tietoa");
+  exit;
+}
+
 
 // Suoritetaan projektin alustusskripti.
 require_once '../src/init.php';
@@ -49,6 +59,11 @@ $request = str_replace($config['urls']['baseUrl'],'',$_SERVER['REQUEST_URI']);
         echo $templates->render('tapahtumanotfound');
       }
       break;
+    
+    case '/tietoa':
+      echo $templates->render('tietoa');
+      break;
+
 
       // ... switch-lauseen alku säilyy sellaisenaan
     case '/lisaa_tili':

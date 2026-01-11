@@ -1,16 +1,24 @@
 <?php $this->layout('template', ['title' => $tapahtuma['nimi']]) ?>
 
-<h1><?=$tapahtuma['nimi']?></h1>
+<h1 class="project-title"><?= htmlspecialchars((string)$tapahtuma['nimi']) ?></h1>
 
-<?php if (!empty($tapahtuma['tyyppi'])): ?>
-  <div><strong>Tyyppi:</strong> <?=$tapahtuma['tyyppi']?></div>
-<?php endif; ?>
+<div class="project-meta">
+  <?php if (!empty($tapahtuma['tyyppi'])): ?>
+    <span class="tag"><?= htmlspecialchars((string)$tapahtuma['tyyppi']) ?></span>
+  <?php endif; ?>
 
-<div><?=$tapahtuma['kuvaus']?></div>
+  <?php if (!empty($tapahtuma['vetaja'])): ?>
+    <span class="project-lead">Vetäjä: <?= htmlspecialchars((string)$tapahtuma['vetaja']) ?></span>
+  <?php endif; ?>
+</div>
 
-<?php if (!empty($tapahtuma['vetaja'])): ?>
-  <div><strong>Vetäjä:</strong> <?=$tapahtuma['vetaja']?></div>
-<?php endif; ?>
+<div class="project-desc">
+  <?= nl2br(htmlspecialchars((string)$tapahtuma['kuvaus'])) ?>
+</div>
+
+<p class="project-note">
+  Roolit ja työnjako sovitaan projektin alussa Discordissa.
+</p>
 
 <?php
   if ($loggeduser) {

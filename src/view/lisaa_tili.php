@@ -16,6 +16,10 @@
   <div>
     <label for="discord">Discord-tunnus:</label>
     <input type="text" name="discord" value="<?= getValue($formdata,'discord')?>">
+    <div class="info">
+    Discord-tunnus on pakollinen, koska projektin alussa
+    roolit ja työnjako sovitaan Discordissa projektin vetäjän kanssa.
+  </div>
     <div class="error"><?= getValue($error,'discord'); ?></div>
   </div>
   <div>

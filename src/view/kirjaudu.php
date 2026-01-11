@@ -11,7 +11,11 @@
     <label>Salasana:</label>
     <input type="password" name="salasana">
   </div>
-  <div class="error"><?= getValue($error,'virhe'); ?></div>
+  <?php $virhe = getValue($error, 'virhe'); ?>
+<?php if (!empty($virhe)): ?>
+  <div class="error"><?= htmlspecialchars((string)$virhe) ?></div>
+<?php endif; ?>
+
   <div>
     <input type="submit" name="laheta" value="Kirjaudu">
   </div>
