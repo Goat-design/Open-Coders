@@ -221,11 +221,26 @@ $request = str_replace($config['urls']['baseUrl'],'',$_SERVER['REQUEST_URI']);
     case (bool)preg_match('/\/admin.*/', $request):
       if ($loggeduser && !empty($loggeduser["admin"])) {
 
-        $kayttajat = [];
         $errors = [];
         $info = null;
 
-        // 1) Projektin luonti (POST)
+        require_once MODEL_DIR . 'tapahtuma.php';
+        $projektit = haeTapahtumat();
+
+        $muokattava = null;
+        if (isset($_GET['muokkaa']) && ctype_digit($_GET['muokkaa'])) {
+          $muokattava = haeTapahtuma((int)$_GET['muokkaa']);
+        }
+
+        if (isset($_GET['ok']) && $_GET['ok'] === '1') {
+          $info = "Projekti lisätty onnistuneesti.";
+        }
+
+        if (isset($_GET['updated']) && $_GET['updated'] === '1') {
+          $info = "Projekti päivitetty onnistuneesti.";
+        }       
+
+        //Projektin luonti
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'lisaa_projekti') {
 
           $nimi = trim($_POST['nimi'] ?? '');
@@ -251,7 +266,8 @@ $request = str_replace($config['urls']['baseUrl'],'',$_SERVER['REQUEST_URI']);
             try {
               if (lisaaProjekti($nimi, $tyyppi, $kuvaus, $vetaja, $osallistujia)) {
                 $info = "Projekti lisätty onnistuneesti.";
-                header("Location: " . $config['urls']['baseUrl'] . "/admin?lisaa_projekti=1");
+                header("Location: " . $config['urls']['baseUrl'] . "/admin?lisaa_projekti=1&ok=1");
+              
                 exit;
               } else {
                 $errors[] = "Projektin lisääminen epäonnistui.";
@@ -262,17 +278,46 @@ $request = str_replace($config['urls']['baseUrl'],'',$_SERVER['REQUEST_URI']);
           }
         }
 
-        // 2) Käyttäjien listaus (GET)
-        if (isset($_GET['listaa_kayttajat']) && $_GET['listaa_kayttajat'] === '1') {
-          require_once MODEL_DIR . 'henkilo.php';
-          $kayttajat = haeKayttajat();
+                // Projektin muokkaus
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'paivita_projekti') {
+
+          $id = (int)($_POST['id'] ?? 0);
+          $nimi = trim($_POST['nimi'] ?? '');
+          $tyyppi = trim($_POST['tyyppi'] ?? '');
+          $vetaja = trim($_POST['vetaja'] ?? '');
+          $kuvaus = trim($_POST['kuvaus'] ?? '');
+          $osallistujia = $_POST['osallistujia'] ?? null;
+
+          if ($id <= 0) $errors[] = "Virheellinen projektin id.";
+          if ($nimi === '') $errors[] = "Projektin nimi puuttuu.";
+          if ($tyyppi === '') $errors[] = "Tyyppi puuttuu.";
+          if ($vetaja === '') $errors[] = "Vetäjä puuttuu.";
+          if ($kuvaus === '') $errors[] = "Kuvaus puuttuu.";
+
+          if ($osallistujia !== null && $osallistujia !== '') {
+            if (!ctype_digit((string)$osallistujia) || (int)$osallistujia < 1) {
+              $errors[] = "Osallistujamäärän pitää olla vähintään 1.";
+            }
+          }
+
+          if (!$errors) {
+            try {
+              paivitaProjekti($id, $nimi, $tyyppi, $kuvaus, $vetaja, $osallistujia);
+              header("Location: " . $config['urls']['baseUrl'] . "/admin?muokkaa=" . $id . "&updated=1");
+              exit;
+            } catch (Throwable $e) {
+              $errors[] = "Projektin päivittäminen epäonnistui (palvelinvirhe).";
+            }
+          }
         }
+
 
         echo $templates->render('yllapito', [
           'loggeduser' => $loggeduser,
-          'kayttajat'  => $kayttajat,
           'errors'     => $errors,
-          'info'       => $info
+          'info'       => $info,
+          'projektit'  => $projektit,
+          'muokattava' => $muokattava
         ]);
 
       } else {

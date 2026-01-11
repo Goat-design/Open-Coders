@@ -31,4 +31,27 @@ function lisaaProjekti($nimi, $tyyppi, $kuvaus, $vetaja, $osallistujia) {
   return true;
 }
 
+function paivitaProjekti($id, $nimi, $tyyppi, $kuvaus, $vetaja, $osallistujia) {
+  $osallistujia = ($osallistujia === '' ? null : $osallistujia);
+
+  $sql = "UPDATE tapahtuma
+          SET nimi = :nimi,
+              tyyppi = :tyyppi,
+              kuvaus = :kuvaus,
+              vetaja = :vetaja,
+              osallistujia = :osallistujia
+          WHERE idtapahtuma = :id";
+
+  DB::run($sql, [
+    ':id' => $id,
+    ':nimi' => $nimi,
+    ':tyyppi' => $tyyppi,
+    ':kuvaus' => $kuvaus,
+    ':vetaja' => $vetaja,
+    ':osallistujia' => $osallistujia
+  ]);
+
+  return true;
+}
+
 ?>

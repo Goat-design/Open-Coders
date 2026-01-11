@@ -4,23 +4,65 @@
 
 <div class="yllapito">
 
+<?php
+  $lisaa_projekti = isset($_GET['lisaa_projekti']) && $_GET['lisaa_projekti'] === '1';
+  $muokkaa = !empty($muokattava);
+
+  if ($muokkaa) {
+    $lisaa_projekti = false;
+  }
+
+  $tila = $lisaa_projekti || $muokkaa;
+?>
+
+
+<?php if (!$tila): ?>
+
+    <h2>Projektit</h2>
+
+    <?php if (!empty($projektit)): ?>
+      <table>
+        <thead>
+          <tr>
+            <th>Nimi</th>
+            <th>Tyyppi</th>
+            <th>Vetäjä</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($projektit as $p): ?>
+            <tr>
+              <td><?= htmlspecialchars((string)$p['nimi']) ?></td>
+              <td><?= htmlspecialchars((string)$p['tyyppi']) ?></td>
+              <td><?= htmlspecialchars((string)$p['vetaja']) ?></td>
+              <td>
+                <a href="<?= BASEURL ?>/admin?muokkaa=<?= (int)$p['idtapahtuma'] ?>">Muokkaa</a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    <?php else: ?>
+      <p>Ei projekteja.</p>
+    <?php endif; ?>
+
+<?php endif; ?>
+
+<?php if (!$tila): ?>
   <form method="get" action="">
-    <button type="submit" name="listaa_kayttajat" value="1">Listaa käyttäjät</button>
     <button type="submit" name="lisaa_projekti" value="1">Luo projekti</button>
   </form>
+<?php endif; ?>
+ 
 
-  <?php
-    $listaa = isset($_GET['listaa_kayttajat']) && $_GET['listaa_kayttajat'] === '1';
-    $lisaa_projekti = isset($_GET['lisaa_projekti']) && $_GET['lisaa_projekti'] === '1';
-  ?>
-
-  <?php if ($listaa || $lisaa_projekti): ?>
+  <?php if ($tila): ?>
     <form method="get" action="" style="margin-top: 1rem;">
       <button type="submit">Takaisin</button>
     </form>
   <?php endif; ?>
 
-  <?php if (!empty($info)): ?>
+  <?php if ($tila && !empty($info)): ?>
     <div class="info"><?= htmlspecialchars((string)$info) ?></div>
   <?php endif; ?>
 
@@ -32,49 +74,11 @@
     </div>
   <?php endif; ?>
 
-  <?php if ($listaa): ?>
-
-    <h2>Käyttäjät</h2>
-
-    <?php if (empty($kayttajat)): ?>
-      <p>Ei löytynyt käyttäjiä.</p>
-    <?php else: ?>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nimi</th>
-            <th>Discord</th>
-            <th>Email</th>
-            <th>Vahvistettu</th>
-            <th>Admin</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($kayttajat as $k): ?>
-            <tr>
-              <td><?= htmlspecialchars((string)($k['idhenkilo'] ?? '')) ?></td>
-              <td><?= htmlspecialchars((string)($k['nimi'] ?? '')) ?></td>
-              <td><?= htmlspecialchars((string)($k['discord'] ?? '')) ?></td>
-              <td><?= htmlspecialchars((string)($k['email'] ?? '')) ?></td>
-              <td><?= !empty($k['vahvistettu']) ? 'Kyllä' : 'Ei' ?></td>
-              <td><?= !empty($k['admin']) ? 'Kyllä' : 'Ei' ?></td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-    <?php endif; ?>
-
-  <?php endif; ?>
-
 
   <?php if ($lisaa_projekti): ?>
 
     <h2>Uusi projekti</h2>
 
-    <div class="info">
-      Roolit ja työnjako sovitaan projektin alussa Discordissa.
-    </div>
 
     <form method="post" action="">
       <input type="hidden" name="action" value="lisaa_projekti">
@@ -108,5 +112,47 @@
     </form>
 
   <?php endif; ?>
+
+  <?php if (!empty($muokattava)): ?>
+
+  <h2>Muokkaa projektia</h2>
+
+  <form method="post" action="">
+    <input type="hidden" name="action" value="paivita_projekti">
+    <input type="hidden" name="id" value="<?= (int)$muokattava['idtapahtuma'] ?>">
+
+    <div>
+      <label>Projektin nimi</label>
+      <input type="text" name="nimi" required
+        value="<?= htmlspecialchars((string)$muokattava['nimi']) ?>">
+    </div>
+
+    <div>
+      <label>Tyyppi</label>
+      <input type="text" name="tyyppi" required
+        value="<?= htmlspecialchars((string)$muokattava['tyyppi']) ?>">
+    </div>
+
+    <div>
+      <label>Vetäjä</label>
+      <input type="text" name="vetaja" required
+        value="<?= htmlspecialchars((string)$muokattava['vetaja']) ?>">
+    </div>
+
+    <div>
+      <label>Maksimi osallistujamäärä</label>
+      <input type="number" name="osallistujia" min="1"
+        value="<?= htmlspecialchars((string)$muokattava['osallistujia']) ?>">
+    </div>
+
+    <div>
+      <label>Kuvaus</label>
+      <textarea name="kuvaus" rows="6" required><?= htmlspecialchars((string)$muokattava['kuvaus']) ?></textarea>
+    </div>
+
+    <input type="submit" value="Tallenna muutokset">
+  </form>
+
+<?php endif; ?>
 
 </div>
