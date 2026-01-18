@@ -1,91 +1,61 @@
-# Open Coders
+# Open Coders – projektialusta oppilaitoksille
 
-Open Coders on koodaajien ja ideoiden yhdistämiseen tarkoitettu verkkopalvelu.  
-Se on muunnelma tapahtumapalvelusta, joka on kehitetty osana koulun opinnäytetyötä.
+Open Coders on kevyt ja selkeä PHP-pohjainen web-sovellus projektien hallintaan ja niihin ilmoittautumiseen. Palvelu on suunniteltu erityisesti oppilaitoskäyttöön, jossa projektit toimivat osana opetusta ja opiskelijayhteisöä.
 
-Palvelussa perinteinen “tapahtuma” on muutettu **projektiksi**, johon käyttäjät voivat ilmoittautua osallistuakseen kehitystyöhön.
+## Tarkoitus
 
----
+Sovelluksen tavoitteena on tarjota keskitetty paikka:
 
-## Projektin idea
+* aktiivisten projektien esittelyyn
+* opiskelijoiden ilmoittautumiseen projekteihin
+* projektien perustietojen hallintaan
 
-Open Codersin tarkoitus on tarjota alusta, jossa:
-- ideat muuttuvat projekteiksi
-- projektit kokoavat ympärilleen tekijöitä
-- käyttäjät voivat osallistua useisiin projekteihin
+Palvelu tukee projektimuotoista oppimista ilman tarpeetonta monimutkaisuutta.
 
-Painopiste ei ole yksittäisessä ajankohdassa, vaan projektin sisällössä ja yhteistyössä.
+## Projektien luonne
 
----
+Tässä vaiheessa Open Coders on tarkoitettu ohjelmointiprojekteille, kuten:
 
-## Projektit
+* web-sovellukset
+* peliprojektit
+* sovellus- ja ohjelmistokehitysprojektit
 
-Projektit luodaan ylläpitäjän (admin-käyttäjän) toimesta.
+Järjestelmää olisi kuitenkin helppo laajentaa:
 
-Jokaisella projektilla on:
-- nimi
-- kuvaus
-- projektin vetäjä (kirjattuna kuvaukseen)
-- tarvittaessa määritellyt roolit (esim. frontend, backend, suunnittelu)
+* lisäämällä suodattimia tai kategorioita eri kursseille
+* tukemaan eri koulutusaloille tai suuntautumisille tarkoitettuja projekteja
 
-Projektin ajallinen kesto tai tavoitteiden tarkempi määrittely jätetään projektikuvauksen vastuulle.
-
----
-
-## Käyttäjät ja osallistuminen
-
-- Käyttäjät voivat ilmoittautua mukaan projekteihin
-- Sama käyttäjä voi osallistua useaan projektiin
-- Projektien osallistujat ovat julkisesti nähtävissä
-- Osallistuminen tarkoittaa kiinnostusta osallistua projektin toteutukseen
-
-Projektien onnistumista tai lopputulosta ei tässä vaiheessa määritellä erikseen.
-
----
+Tällaisessa laajennuksessa Discord-vaatimus voitaisiin poistaa tai korvata muulla viestintätavalla.
+Nämä ominaisuudet on kuitenkin tietoisesti jätetty pois, jotta opinnäytetyö pysyy hallittavana eikä kasva liian laajaksi.
 
 ## Käyttäjäroolit
 
-Palvelussa on seuraavat roolit:
-- **Ylläpitäjä (admin)**  
-  - luo ja hallinnoi projekteja
-- **Käyttäjä**  
-  - voi ilmoittautua projekteihin
-  - voi osallistua useisiin projekteihin
+* Vierailija: voi tarkastella projekteja
+* Kirjautunut käyttäjä (opiskelija): voi ilmoittautua ja poistua projekteista
+* Ylläpitäjä (opettaja):
+  - lisää ja muokkaa projekteja
+  - vastaa projektien sisällöstä
 
----
+## Ylläpitomalli (tietoinen rajaus)
 
-## Tekninen toteutus
+Palvelussa ei ole erillistä yhteydenottolomaketta ylläpitäjälle.
+Ylläpitäjänä toimii opettaja, joka hallinnoi projektitarjontaa.
 
-Palvelu on toteutettu PHP:llä ja perustuu MVC-tyyppiseen rakenteeseen.  
-Tietokanta on MySQL/MariaDB.
+Tämä ratkaisu ehkäisee opiskelijoiden spämmäystä ja väärinkäytöksiä, pitää projektit pedagogisesti perusteltuina ja yksinkertaistaa järjestelmän rakennetta
 
-Projektissa hyödynnetään:
-- PHP
-- PDO tietokantayhteyksissä
-- Apache + `.htaccess` reitityksessä
-- Composer riippuvuuksien hallintaan
+## Projektien käytäntö
 
-Ympäristökohtaiset asetukset (kuten tietokantatunnukset) on erotettu versionhallinnasta.
+* Projektien roolit ja työnjako sovitaan Discordissa projektin alussa
+* Discord-tunnus on pakollinen käyttäjätieto tätä varten
 
----
+## Soveltuvuus
 
-## Projektin rajaukset
+Sovellus soveltuu erityisesti:
 
-Seuraavat ominaisuudet on rajattu projektin ulkopuolelle tässä vaiheessa:
-- reaaliaikainen viestintä (chat)
-- projektinhallintatyökalut (kanban, tehtävälistat)
-- ulkoiset integraatiot (esim. GitHub)
+* ohjelmointikursseille
+* projektimuotoiseen opetukseen
+* opiskelijatiimien muodostamiseen opettajan ohjauksessa
 
-Rajaukset on tehty, jotta opinnäytetyö pysyy hallittavana ja keskittyy ydintoiminnallisuuteen.
 
----
 
-## Kehityksen lähtökohta
-
-Open Coders on rakennettu muokkaamalla olemassa olevaa tapahtumapalvelua.  
-Muunnos keskittyy:
-- terminologian muutokseen (tapahtuma → projekti)
-- käyttötarkoituksen uudelleenmäärittelyyn
-- käyttäjien roolin laajentamiseen
-
-Tavoitteena on osoittaa kykyä analysoida olemassa olevaa järjestelmää ja kehittää siitä uusi, eri käyttötarkoitukseen soveltuva palvelu.
+Tämä projekti on toteutettu opinnäytetyönä ja toimii esimerkkinä rajatusta, tarkoituksenmukaisesta ja laajennettavasta web-sovelluksesta oppilaitosympäristöön.
